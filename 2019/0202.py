@@ -31,6 +31,3 @@ for noun in range(100):
 
     if found:
         break
-
-
-
