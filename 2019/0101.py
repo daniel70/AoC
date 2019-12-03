@@ -1,5 +1,8 @@
+"""
+Advent of Code 2019, day 1, puzzle 1
+"""
 l = []
-with open('input01.txt') as f:
+with open("input01.txt") as f:
     for line in f:
         l.append(int(line))
 

@@ -1,11 +1,13 @@
+"""
+Advent of Code 2019, day 2, puzzle 2
+"""
 found = False
-with open('input02.txt') as f:
+with open("input02.txt") as f:
     test = f.read()
 
-memory = [int(s) for s in test.split(',')]
+memory = [int(s) for s in test.split(",")]
 for noun in range(100):
     for verb in range(100):
-        print(f'testing {noun=} {verb=}')
         codes = memory[:]
         codes[1] = noun
         codes[2] = verb
@@ -14,15 +16,18 @@ for noun in range(100):
             opcode = codes[counter]
             if opcode == 99:
                 if codes[0] == 19690720:
-                    print(f'{noun=} {verb=} answer is {100 * noun + verb}')
                     found = True
                 break
             elif opcode == 1:
-                codes[codes[counter+3]] = codes[codes[counter+1]] + codes[codes[counter+2]]
+                codes[codes[counter + 3]] = (
+                    codes[codes[counter + 1]] + codes[codes[counter + 2]]
+                )
             elif opcode == 2:
-                codes[codes[counter+3]] = codes[codes[counter+1]] * codes[codes[counter+2]]
+                codes[codes[counter + 3]] = (
+                    codes[codes[counter + 1]] * codes[codes[counter + 2]]
+                )
             else:
-                print(f'invalid opcode {opcode} at {counter}')
+                print(f"invalid opcode {opcode} at {counter}")
                 continue
             counter += 4
 
@@ -31,3 +36,5 @@ for noun in range(100):
 
     if found:
         break
+
+print(f"{noun=} {verb=} answer is {100 * noun + verb}")
