@@ -2,15 +2,18 @@
 Advent of Code 2019, day 9, puzzle 1
 Use a generator to solve this puzzle
 """
-from itertools import permutations
+from collections import defaultdict
 
-debug = False
-with open("input07.txt") as f:
+debug = True
+with open("input09.txt") as f:
     line = f.readline()
 
-line = "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99"
+line = line[:-1]
+# line = "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99"
 # line = "1102,34915192,34915192,7,4,7,99,0"
-codes = [int(s) for s in line.split(",")]
+# line = "104,1125899906842624,99"
+codes_dict = {k: v for k, v in enumerate(int(s) for s in line.split(","))}
+codes = defaultdict(int, codes_dict)
 
 init = 1
 counter = 0
@@ -18,10 +21,11 @@ opcode = 0
 relative_base = 0
 
 while True:
-    print(f'{counter=} {relative_base=}')
+    p1 = None
+    p2 = None
     opcode = codes[counter]
     if opcode == 99:
-        print('stop')
+        break
 
     op = opcode % 100
 
@@ -43,6 +47,11 @@ while True:
             p2 = codes[relative_base + codes[counter + 2]]
 
         A = opcode // 10000 % 10
+        if A != 0:
+            print(f'Found invalid opcode for param A {A}')
+
+    if debug:
+        print(f'{counter=} {op=} {p1=} {p2=} {relative_base=}')
 
     if op == 1:  # sum
         codes[codes[counter + 3]] = p1 + p2
