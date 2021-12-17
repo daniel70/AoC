@@ -31,14 +31,14 @@ def get_neighbours(point, cave):
 
 def shortest_path():
     # keep improving until there is nothing to improve
-    improved = False
-    while not improved:
-        improved = True
+    improved = True
+    while improved:
+        improved = False
         for idx, cost in enumerate(costs):
             neighbours = get_neighbours(idx, cave)
             least = min([costs[n] for n in neighbours])
             if least + cave[idx] < cost:
-                improved = False
+                improved = True
                 costs[idx] = least + cave[idx]
 
     return costs[-1]
