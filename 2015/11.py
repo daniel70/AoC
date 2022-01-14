@@ -1,51 +1,57 @@
 import re
-from string import ascii_lowercase as az
-pw = "hxbxwxba"
+import sys
+sys.setrecursionlimit(15000)
 
-repairs = re.compile(r"([a-z])\1")
-triplets = ["".join(l) for l in zip(az, az[1:], az[2:])]
-for triplet in triplets[:]:
-    if any(c in ["i", "o", "l"] for c in triplet):
-        triplets.remove(triplet)
+password = "hxbxwxba"
+password = "abcdefgh"
+password = "ghijklmn"
+letters = "abcdefghijkmlnopqrstuvwxyz"
+valid_letters = "abcdefghjkmnpqrstuvwxyz"
+
+two_consecutive = list((a + b for a, b in zip(valid_letters, valid_letters)))
+consecutive = [valid_letters[i - 3:i] for i in range(3, 27)]
+print(list(two_consecutive))
+print(consecutive)
 
 
-def passwords(pw) -> str:
-    pw_len = len(pw)
-    pw = list(pw)
-    while True:
-        for i in range(pw_len - 1, -1, -1):
-            next_char = az[(az.index(pw[i]) + 1) % 26]
-            pw[i] = next_char
-            if next_char != "a":
-                yield "".join(pw)
-                break
+def new_password(password: str) -> str:
+    # if there is an i in password replace with j and the rest with a
 
+    tmp = list(password[::-1])
+    for idx, c in enumerate(tmp):
+        if c == "z":
+            tmp[idx] = "a"
         else:
-            # we reached the end
-            break
+            tmp[idx] = valid_letters[valid_letters.index(c) + 1]
+            return "".join(reversed(tmp))
 
 
-def valid(password) -> bool:
-    # check for confusing characters
-    if any([c in ["i", "o", "l"] for c in password]):
-        return False
+found = False
+while not found:
+    password = new_password(password)
+    print(f"valid = {password}")
 
-    # check for increasing straight
-    if not any(triplet in password for triplet in triplets):
-        return False
+    if "i" in password:
+        continue
+    if "l" in password:
+        continue
+    if "o" in password:
+        continue
 
-    # check for two different, non-overlapping pairs
-    if len(set(repairs.findall(password))) < 2:
-        return False
+    if not any(con in password for con in consecutive):
+        print("no 3-s")
+        continue
 
-    return True
-
-
-for x in [1, 2]:
-    for password in passwords(pw):
-        if not valid(password):
+    once = False
+    for two in two_consecutive:
+        if two not in password:
+            print("no 2-s")
             continue
+        elif not once:
+            print("found once")
+            once = True
+            continue
+        else:
+            found = True
 
-        print(f"answer {x}:", password)
-        pw = password
-        break
+print(password)
