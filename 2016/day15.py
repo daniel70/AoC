@@ -17,7 +17,6 @@ def time(discs):
 
 
 def main():
-    print("lets go")
     # set the starting position to zero for each disk
     discs = [[idx, arms, (pos + idx) % arms] for idx, arms, _, pos in lines]
     t = time(discs)
