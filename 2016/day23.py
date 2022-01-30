@@ -1,5 +1,5 @@
 instructions = open("input23.txt").read().strip().splitlines()
-registers = {"a": 7, "b": 0, "c": 0, "d": 0}
+registers = {"a": 12, "b": 0, "c": 0, "d": 0}
 pointer = 0
 
 
@@ -11,6 +11,7 @@ def get_value(arg: str):
 
 
 while pointer < len(instructions):
+    print(registers, pointer)
     args = instructions[pointer].split()
     match args[0]:
         case "jnz":
@@ -20,6 +21,7 @@ while pointer < len(instructions):
                 pointer += get_value(args[2])
         case "inc":
             registers[args[1]] += 1
+            # registers[args[1]] = get_value(args[1]) * get_value(args[1])
             pointer += 1
         case "dec":
             registers[args[1]] -= 1
