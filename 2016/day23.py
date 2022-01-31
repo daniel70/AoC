@@ -1,5 +1,5 @@
-instructions = open("input23.txt").read().strip().splitlines()
-registers = {"a": 12, "b": 0, "c": 0, "d": 0}
+instructions = open("input23mul.txt").read().strip().splitlines()
+registers = {"a": 7, "b": 0, "c": 0, "d": 0}
 pointer = 0
 
 
@@ -14,6 +14,12 @@ while pointer < len(instructions):
     print(registers, pointer)
     args = instructions[pointer].split()
     match args[0]:
+        case "mul":
+            if get_value(args[1]) == 0:
+                pointer += 1
+            else:
+                registers[args[2]] += get_value(args[1])
+                registers[args[1]] = 0
         case "jnz":
             if get_value(args[1]) == 0:
                 pointer += 1
