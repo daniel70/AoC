@@ -1,11 +1,8 @@
-# the maze is 185x41 and has 8 points
 import itertools
 import math
 from collections import defaultdict, namedtuple
-from pprint import pprint
 
 point = namedtuple("Point", "x y")
-
 maze = []
 mazed = {}
 pois = {}
@@ -22,25 +19,8 @@ with open("input24.txt") as f:
                 mazed[point(char_nr, line_nr)] = False
             if c.isdigit():
                 pois[point(char_nr, line_nr)] = c
-                # pois[c] = point(char_nr, line_nr)
 
         maze.append(maze_line)
-
-
-def print_maze(maze, points):
-    print(f"{step=}")
-    for y, line in enumerate(maze):
-        for x, char in enumerate(line):
-            if point(x, y) in points:
-                print("x", end="")
-            elif point(x, y) in pois:
-                print(pois[point(x, y)], end="")
-            elif char:
-                print("#", end="")
-            else:
-                print(" ", end="")
-
-        print()
 
 
 def get_neighbours(neighbour: point) -> list:
@@ -53,7 +33,6 @@ def get_neighbours(neighbour: point) -> list:
 
 
 distances = defaultdict(dict)
-
 steps = set()
 for poi, nr in pois.items():
     step = 0
@@ -71,22 +50,24 @@ for poi, nr in pois.items():
                         distances[nr][pois[neighbour]] = step
                     new_points.append(neighbour)
         points = new_points
-        # print_maze(maze, points)
 
         if len(distances[nr]) == len(pois) - 1:
             break
 
-pprint(distances)
-
 routes = list(distances.keys())
 routes.remove('0')
-shortest = math.inf
+shortest_path_all = math.inf
+shortest_path_back = math.inf
 for route in itertools.permutations(routes, len(routes)):
     start_from = '0'
     trip_total = 0
     for location in route:
         trip_total += distances[start_from][location]
         start_from = location
-    shortest = min(shortest, trip_total)
 
-print(shortest)
+    shortest_path_all = min(shortest_path_all, trip_total)
+    trip_total += distances[start_from]['0']
+    shortest_path_back = min(shortest_path_back, trip_total)
+
+print("answer 1:", shortest_path_all)
+print("answer 2:", shortest_path_back)
