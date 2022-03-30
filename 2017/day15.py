@@ -14,8 +14,8 @@ def generator(start, factor, mod=1):
 def matches(gen_a, gen_b, rounds):
     total = 0
     for _ in range(rounds):
-        a = next(gen_a) & 65535
-        b = next(gen_b) & 65535
+        a = next(gen_a) & 0xffff
+        b = next(gen_b) & 0xffff
         if a == b:
             total += 1
 
