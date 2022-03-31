@@ -4,13 +4,13 @@ from string import ascii_lowercase
 def dance(programs, instructions):
     for instruction in instructions:
         match instruction[0]:
-            case "s":  # spin
+            case "s":
                 x = int(instruction[1:])
                 programs = programs[-x:] + programs[:-x]
-            case "x":  # swap
+            case "x":
                 x, y = sorted([int(x) for x in instruction[1:].split("/")])
                 programs = programs[:x] + programs[y] + programs[x + 1:y] + programs[x] + programs[y + 1:]
-            case "p":  # partner
+            case "p":
                 x, y = sorted([programs.index(x) for x in instruction[1:].split("/")])
                 programs = programs[:x] + programs[y] + programs[x + 1:y] + programs[x] + programs[y + 1:]
     return programs
