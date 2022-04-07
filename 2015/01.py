@@ -1,9 +1,10 @@
 with open("input01.txt") as f:
-    line = f.readline().strip()
+    instructions = f.readline().strip()
 
-print(line.count('(') - line.count(')'))
+print("answer 1:", instructions.count('(') - instructions.count(')'))
+
 floor = 0
-for idx, c in enumerate(line):
+for idx, c in enumerate(instructions):
     if c == "(":
         floor += 1
     if c == ")":
@@ -12,4 +13,4 @@ for idx, c in enumerate(line):
     if floor == -1:
         break
 
-print(idx+1)
+print("answer 2:", idx+1)
