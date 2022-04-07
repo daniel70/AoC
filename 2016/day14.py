@@ -36,4 +36,4 @@ def solve(rounds):
 
 
 print("answer 1:", solve(0))
-print("answer 1:", solve(2016))
+print("answer 2:", solve(2016))
