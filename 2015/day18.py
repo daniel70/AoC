@@ -1,5 +1,4 @@
 import math
-iterations = 100
 
 
 def neighbours(i, W):
@@ -14,6 +13,25 @@ def corners(board, W, H):
     return board
 
 
+def animate(board, corners_are_stuck=False):
+    if corners_are_stuck:
+        board = corners(board, W, H)
+
+    for i in range(100):
+        new_board = board.copy()
+        for idx, val in enumerate(board):
+            if val and sum([board[cell] for cell in neighbours(idx, W)]) not in [2, 3]:
+                new_board[idx] = False
+            elif not val and sum([board[cell] for cell in neighbours(idx, W)]) == 3:
+                new_board[idx] = True
+
+        board = new_board
+        if corners_are_stuck:
+            board = corners(board, W, H)
+
+    return board
+
+
 instructions = []
 with open('input18.txt') as f:
     for line in f:
@@ -22,32 +40,6 @@ with open('input18.txt') as f:
 
 W = H = int(math.sqrt(len(instructions)))
 adjacent = [-W-1, -W, -W+1, -1, 1, W-1, W, W+1]
-board = instructions[:]
 
-for i in range(iterations):
-    new_board = board[:]
-    for idx, val in enumerate(board[:]):
-        if val and sum([board[cell] for cell in neighbours(idx, W)]) not in [2, 3]:
-            new_board[idx] = False
-        elif not val and sum([board[cell] for cell in neighbours(idx, W)]) == 3:
-            new_board[idx] = True
-
-    board = new_board
-
-print("answer 1:", sum(board))
-
-board = instructions[:]
-board = corners(board, W, H)
-
-for i in range(iterations):
-    new_board = board[:]
-    for idx, val in enumerate(board[:]):
-        if val and sum([board[cell] for cell in neighbours(idx, W)]) not in [2, 3]:
-            new_board[idx] = False
-        elif not val and sum([board[cell] for cell in neighbours(idx, W)]) == 3:
-            new_board[idx] = True
-
-    board = new_board
-    board = corners(board, W, H)
-
-print("answer 2:", sum(board))
+print("answer 1:", sum(animate(instructions.copy())))
+print("answer 2:", sum(animate(instructions.copy(), corners_are_stuck=True)))
