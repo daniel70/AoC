@@ -46,6 +46,3 @@ while True:
         break
 
 
-program_0 = defaultdict(int)
-program_1 = defaultdict(int)
-program_1["p"] = 1
