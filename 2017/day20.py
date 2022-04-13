@@ -26,7 +26,8 @@ for step in range(100):
     doubles = [p for p, count in c.items() if count > 1]
     for double in doubles:
         instructions = [
-            p for p in instructions if not (p.px == double[0] and p.py == double[1] and p.pz == double[2])
+            p for p in instructions
+            if not (p.px == double[0] and p.py == double[1] and p.pz == double[2])
         ]
 
     for idx, p in enumerate(instructions):
