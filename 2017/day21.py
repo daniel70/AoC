@@ -1,5 +1,4 @@
 from math import sqrt
-from pprint import pprint
 
 
 def stitch_squares(squares):
@@ -42,7 +41,6 @@ def divide_square(square: list[list]):
     ..|..
     #.|.#
     """
-    squares = []
     length = len(square)
     if length % 2 == 0:
         step = 2
@@ -51,11 +49,17 @@ def divide_square(square: list[list]):
     else:
         raise ValueError(f"{length=} is not divisable by 2 or 3.")
 
-    for y in range(0, length, step):
-        for x in range(0, length, step):
-            squares.append(
-                [[square[dx + x][dy + y] for dx in range(step)] for dy in range(step)]
-            )
+    squares = []
+    for y_sq in range(length // step):
+        for x_sq in range(length // step):
+            table = []
+            for y in range(step):
+                row = []
+                for x in range(step):
+                    row.append(square[y_sq * step + y][x_sq * step + x])
+                table.append(row.copy())
+            squares.append(table.copy())
+
     return squares
 
 
@@ -63,20 +67,14 @@ def rotate_square(square: list[list]) -> list[list]:
     """
     This function takes a square and returns the same square rotated by 90 degrees.
     """
-    return [
-        [square[i][j] for i in reversed(range(len(square)))]
-        for j in range(len(square))
-    ]
+    return [[square[i][j] for i in reversed(range(len(square)))] for j in range(len(square))]
 
 
 def flip_square(square: list[list]) -> list[list]:
     """
     This function takes a square and returns the same square flipped horizontally.
     """
-    return [
-        [square[j][i] for i in reversed(range(len(square)))]
-        for j in range(len(square))
-    ]
+    return [[square[j][i] for i in reversed(range(len(square)))] for j in range(len(square))]
 
 
 def square_to_string(square: list[list]) -> str:
@@ -91,58 +89,44 @@ def tupleize(ll):
     return tuple(tuple(l) for l in ll)
 
 
-pattern = r".#./..#/###"
-rules = {}
-with open("test21.txt") as f:
-    for line in f:
-        line = line.strip()
-        l, r = line.split(" => ")
-        square_0 = string_to_square(l)
-        flip_0 = flip_square(square_0)
-        square_1 = rotate_square(square_0)
-        flip_1 = flip_square(square_1)
-        square_2 = rotate_square(square_1)
-        flip_2 = flip_square(square_2)
-        square_3 = rotate_square(square_2)
-        flip_3 = flip_square(square_3)
-        possible_squares = tuple(set([
-            tupleize(square_0),
-            tupleize(flip_0),
-            tupleize(square_1),
-            tupleize(flip_1),
-            tupleize(square_2),
-            tupleize(flip_2),
-            tupleize(square_3),
-            tupleize(flip_3),
-        ]))
-        enhanced_grid = string_to_square(r)
-        for ps in possible_squares:
-            rules[ps] = enhanced_grid
+def main():
+    pattern = r".#./..#/###"
+    rules = {}
+    with open("input21.txt") as f:
+        for line in f:
+            line = line.strip()
+            l, r = line.split(" => ")
+            square_0 = string_to_square(l)
+            flip_0 = flip_square(square_0)
+            square_1 = rotate_square(square_0)
+            flip_1 = flip_square(square_1)
+            square_2 = rotate_square(square_1)
+            flip_2 = flip_square(square_2)
+            square_3 = rotate_square(square_2)
+            flip_3 = flip_square(square_3)
+            possible_squares = tuple(
+                set([tupleize(square_0), tupleize(flip_0), tupleize(square_1), tupleize(flip_1), tupleize(square_2),
+                    tupleize(flip_2), tupleize(square_3), tupleize(flip_3), ]))
+            enhanced_grid = string_to_square(r)
+            for ps in possible_squares:
+                rules[ps] = enhanced_grid
 
-enhanced_grid = string_to_square(pattern)
+    enhanced_grid = string_to_square(pattern)
+    for turn in range(5):
+        squares = divide_square(enhanced_grid)
+        enhances_squares = [rules[tupleize(square)] for square in squares]
+        enhanced_grid, on = stitch_squares(enhances_squares)
 
-# for turn in range(1, 3):
-#     squares = divide_square(enhanced_grid)
-#     enhances_squares = [rules[tupleize(square)] for square in squares]
-#     enhanced_grid, on = stitch_squares(enhances_squares)
-#     print(f"{turn=} , {on=}")
+    print("answer 1:", on)
 
-# squares = divide_square(enhanced_grid)
-# enhances_squares = [rules[tupleize(square)] for square in squares]
-# enhanced_grid, on = stitch_squares(enhances_squares)
-# print(on)
+    enhanced_grid = string_to_square(pattern)
+    for turn in range(18):
+        squares = divide_square(enhanced_grid)
+        enhances_squares = [rules[tupleize(square)] for square in squares]
+        enhanced_grid, on = stitch_squares(enhances_squares)
 
-# squares = divide_square(enhanced_grid)
-# enhances_squares = [rules[tupleize(square)] for square in squares]
-# enhanced_grid, on = stitch_squares(enhances_squares)
-# print(on)
-#
-# squares = divide_square(enhanced_grid)
-# enhances_squares = [rules[tupleize(square)] for square in squares]
-# enhanced_grid, on = stitch_squares(enhances_squares)
-# print(on)
-#
-# squares = divide_square(enhanced_grid)
-# enhances_squares = [rules[tupleize(square)] for square in squares]
-# enhanced_grid, on = stitch_squares(enhances_squares)
-# print(on)
+    print("answer 2:", on)
+
+
+if __name__ == "__main__":
+    exit(main())
