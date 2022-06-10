@@ -1,4 +1,62 @@
+from math import sqrt
 from pprint import pprint
+
+
+def stitch_squares(squares):
+    """ Return one square from a square number of squares"""
+    # step size is square root of squares
+    length = len(squares)
+    step = int(sqrt(length))
+    size = len(squares[0])
+
+    cells = []
+    worm = []
+    for steps in range(0, length, step):
+        for y in range(size):
+            for x in range(step):
+                cells.append((steps + x, y))
+                worm.extend(squares[steps + x][y])
+
+    length = int(sqrt(len(worm)))
+    square = []
+    for x in range(length):
+        row = []
+        for y in range(length):
+            row.append(worm[length * x + y])
+        square.append(row.copy())
+
+    return square, sum(worm)
+
+
+def divide_square(square: list[list]):
+    """
+    We receive a square, can be any size, and return a list of squares
+    #..#
+    ....
+    ....
+    #..#
+
+    #.|.#
+    ..|..
+    --+--
+    ..|..
+    #.|.#
+    """
+    squares = []
+    length = len(square)
+    if length % 2 == 0:
+        step = 2
+    elif length % 3 == 0:
+        step = 3
+    else:
+        raise ValueError(f"{length=} is not divisable by 2 or 3.")
+
+    for y in range(0, length, step):
+        for x in range(0, length, step):
+            squares.append(
+                [[square[dx + x][dy + y] for dx in range(step)] for dy in range(step)]
+            )
+    return squares
 
 
 def rotate_square(square: list[list]) -> list[list]:
@@ -29,6 +87,10 @@ def string_to_square(s: str) -> list[list]:
     return [[0 if c == '.' else 1 for c in row] for row in s.split("/")]
 
 
+def tupleize(ll):
+    return tuple(tuple(l) for l in ll)
+
+
 pattern = r".#./..#/###"
 rules = {}
 with open("test21.txt") as f:
@@ -43,44 +105,44 @@ with open("test21.txt") as f:
         flip_2 = flip_square(square_2)
         square_3 = rotate_square(square_2)
         flip_3 = flip_square(square_3)
-        rules[(
-            square_to_string(square_0),
-            square_to_string(flip_0),
-            square_to_string(square_1),
-            square_to_string(flip_1),
-            square_to_string(square_2),
-            square_to_string(flip_2),
-            square_to_string(square_3),
-            square_to_string(flip_3),
-        )] = r
+        possible_squares = tuple(set([
+            tupleize(square_0),
+            tupleize(flip_0),
+            tupleize(square_1),
+            tupleize(flip_1),
+            tupleize(square_2),
+            tupleize(flip_2),
+            tupleize(square_3),
+            tupleize(flip_3),
+        ]))
+        enhanced_grid = string_to_square(r)
+        for ps in possible_squares:
+            rules[ps] = enhanced_grid
 
+enhanced_grid = string_to_square(pattern)
 
-def divide_square(square: list[list]):
-    """
-    We receive a square, can be any size, and return a list of squares
-    #..#
-    ....
-    ....
-    #..#
+# for turn in range(1, 3):
+#     squares = divide_square(enhanced_grid)
+#     enhances_squares = [rules[tupleize(square)] for square in squares]
+#     enhanced_grid, on = stitch_squares(enhances_squares)
+#     print(f"{turn=} , {on=}")
 
-    #.|.#
-    ..|..
-    --+--
-    ..|..
-    #.|.#
-    """
-    squares = []
-    length = len(square)
-    if length % 2 == 0:
-        step = 2
-    elif length % 3 == 0:
-        step = 3
-    else:
-        raise ArithmeticError(f"{length=} is not divisable by 2 or 3.")
+# squares = divide_square(enhanced_grid)
+# enhances_squares = [rules[tupleize(square)] for square in squares]
+# enhanced_grid, on = stitch_squares(enhances_squares)
+# print(on)
 
-    for y in range(0, length, step):
-        for x in range(0, length, step):
-            squares.append(
-                [[square[dx + x][dy + y] for dx in range(step)] for dy in range(step)]
-            )
-    return squares
+# squares = divide_square(enhanced_grid)
+# enhances_squares = [rules[tupleize(square)] for square in squares]
+# enhanced_grid, on = stitch_squares(enhances_squares)
+# print(on)
+#
+# squares = divide_square(enhanced_grid)
+# enhances_squares = [rules[tupleize(square)] for square in squares]
+# enhanced_grid, on = stitch_squares(enhances_squares)
+# print(on)
+#
+# squares = divide_square(enhanced_grid)
+# enhances_squares = [rules[tupleize(square)] for square in squares]
+# enhanced_grid, on = stitch_squares(enhances_squares)
+# print(on)
