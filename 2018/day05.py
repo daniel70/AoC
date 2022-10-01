@@ -1,32 +1,24 @@
-import string
-lowercase = string.ascii_lowercase
-uppercase = string.ascii_uppercase
-combinations = [lc+uc for lc, uc in zip(lowercase, uppercase)] + [uc+lc for lc, uc in zip(lowercase, uppercase)]
-line = 'dabAcCaCBAcCcaDA'
 with open("input05.txt") as f:
-    line = f.readline()
+    line = f.readline().strip()
 
 
-def react(polymer: str, remove: str | None = None) -> int:
-    if remove is not None:
-        polymer = polymer.replace(remove, '')
-        polymer = polymer.replace(remove.upper(), '')
-
-    match = True
-    while match:
-        for c in combinations:
-            match = False
-            if c in polymer:
-                match = True
-                polymer = polymer.replace(c, '', 1)
-                break
-    return len(polymer) - 1
+def destroy(a, b):
+    return (
+        a.lower() == b.lower()
+        and
+        (a.isupper() and b.islower() or a.islower() and b.isupper())
+    )
 
 
-answer = react(line, None)
-print("answer 1:", answer)
+def react(polymer: str) -> int:
+    buffer = ['-']
+    for c in polymer:
+        if destroy(c, buffer[-1]):
+            buffer.pop()
+        else:
+            buffer.append(c)
+    return len(buffer) - 1
 
-for letter in lowercase:
-    answer = min(answer, react(line, letter))
 
-print("answer 2:", answer)
+print("answer 1:", react(line))
+print("answer 2:", min([react(line.replace(c, '').replace(c.upper(), '')) for c in set(c.lower() for c in line)]))
