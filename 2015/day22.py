@@ -1,108 +1,62 @@
-from typing import NamedTuple
-from dataclasses import dataclass
-from copy import copy
+import re
+
+mana = []
 
 
-@dataclass
-class Boss:
-    hp: int
-    damage: int
+def fight(turn: str, player_hp: int, player_armor: int, player_mana: int, boss_hp: int, effects: dict[str, int], total_mana=0, difficulty="easy"):
+    # return early if there is already a better solution
+    if mana and total_mana >= min(mana):
+        return
 
-    def __str__(self):
-        return f"Boss has {self.hp} hit points"
+    # part two
+    if turn == "player" and difficulty == "hard":
+        player_hp -= 1
 
+    if player_hp <= 0:
+        return
 
-@dataclass
-class Wizard:
-    hp: int
-    armor: int
-    mana: int
+    # run effects
+    for effect, turns in effects.items():
+        if effect == "Shield":
+            if turns == 6:
+                player_armor += 7
+            if turns == 1:
+                player_armor -= 7
+        if effect == "Poison":
+            boss_hp -= 3
+        if effect == "Recharge":
+            player_mana += 101
 
-    def __str__(self):
-        return f"Player has {self.hp} hit points, {self.armor} armor, {self.mana} mana"
+    # decrease and remove effects
+    effects = {k: v-1 for k, v in effects.items() if v > 1}
 
+    if boss_hp <= 0:
+        mana.append(total_mana)
+        return
 
-@dataclass
-class Spell:
-    name: str
-    cost: int
-    effect: int
-    hp: int
-    damage: int
-    armor: int
-    mana: int
+    if turn == "boss":
+        player_hp -= max((boss_damage - player_armor), 1)
+        fight("player", player_hp, player_armor, player_mana, boss_hp, effects, total_mana, difficulty)
 
-    def __str__(self):
-        return self.name
+    elif turn == "player":
+        # try all possible attacks
+        if player_mana >= 53:
+            fight("boss", player_hp, player_armor, player_mana - 53, boss_hp - 4, effects, total_mana + 53, difficulty)
+        if player_mana >= 73:
+            fight("boss", player_hp + 2, player_armor, player_mana - 73, boss_hp - 2, effects, total_mana + 73, difficulty)
+        if player_mana >= 113 and "Shield" not in effects:
+            fight("boss", player_hp, player_armor, player_mana - 113, boss_hp, effects | {'Shield': 6}, total_mana + 113, difficulty)
+        if player_mana >= 173 and "Poison" not in effects:
+            fight("boss", player_hp, player_armor, player_mana - 173, boss_hp, effects | {'Poison': 6}, total_mana + 173, difficulty)
+        if player_mana >= 229 and "Recharge" not in effects:
+            fight("boss", player_hp, player_armor, player_mana - 229, boss_hp, effects | {'Recharge': 5}, total_mana + 229, difficulty)
 
-
-spells = (
-    Spell(name="Magic Missile", cost=53, effect=0, hp=0, damage=4, armor=0, mana=0),
-    Spell(name="Drain", cost=73, effect=0, hp=2, damage=2, armor=0, mana=0),
-    Spell(name="Shield", cost=113, effect=6, hp=0, damage=0, armor=7, mana=0),
-    Spell(name="Poison", cost=173, effect=6, hp=0, damage=3, armor=0, mana=0),
-    Spell(name="Recharge", cost=229, effect=5, hp=0, damage=0, armor=0, mana=101),
-)
-
-
-def cast_spells(wizard, boss, active_spells):
-    wizard.armor = 0
-    for spell in active_spells:
-        print(f"{spell.name} is dealt")
-        wizard.hp += spell.hp
-        wizard.armor += spell.armor
-        wizard.mana += spell.mana
-        boss.hp -= spell.damage
-        spell.effect -= 1
-
-    return wizard, boss, [spell for spell in active_spells if spell.effect >= 1]
+    return
 
 
-def fight(wizard: Wizard, boss: Boss, mana=0, active_spells: list[Spell] = []) -> int:
-    print('\nPlayer Turn')
-    print(wizard)
-    print(boss)
-    wizard, boss, active_spells = cast_spells(wizard, boss, active_spells)
-
-    # start using all available spells
-    for spell in spells:
-        if spell in active_spells:
-            print(f"{spell.name} is already active")
-            continue
-        if spell.cost > wizard.mana:
-            print(f"{spell.name} is too expensive ({spell.cost} > {wizard.mana})")
-            continue
-
-        print(f"Player casts {spell.name}")
-        if spell.effect != 0:
-            active_spells.append(copy(spell))
-        else: # spell runs immediately
-            wizard, boss, _ = cast_spells(wizard, boss, [copy(spell)])
-
-        mana += spell.cost
-        wizard.mana -= spell.cost
-        print(f"active spells are now {active_spells}")
-
-        print('\nBoss turn')
-        print(wizard)
-        print(boss)
-        wizard, boss, active_spells = cast_spells(wizard, boss, active_spells)
-        print(f"active spells are now {active_spells}")
-
-        if boss.hp <= 0:
-            yield mana
-
-        print(f"Boss attacks for {boss.damage} damage.")
-        wizard.hp -= max((boss.damage - wizard.armor), 1)
-
-        if wizard.hp <= 0:
-            yield 0
-        else:
-            yield from fight(wizard, boss, mana, active_spells)
-
-
-boss = Boss(14, 8)
-wizard = Wizard(10, 0, 250)
-ret = list(fight(wizard, boss))
-
-# 641 mana is the cheapest yet
+boss_hp, boss_damage = [int(s) for s in re.findall(r"\d+", open("input22.txt").read())]
+fight("player", 50, 0, 500, boss_hp, {})
+print("answer 1:", min(mana))
+mana.clear()
+fight("player", 50, 0, 500, boss_hp, {}, difficulty="hard")
+print("answer 2:", min(mana))
