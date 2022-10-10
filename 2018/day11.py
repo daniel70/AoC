@@ -1,9 +1,19 @@
 serial = 3613
+# serial = 42
 columns, rows = 300, 300
 
 
 def get_cell(x, y):
     return 300 * (y - 1) + x
+
+
+def get_grid_cells(x, y, size):
+    top_left = get_cell(x, y)
+    grid_cells = []
+    for dx in range(0, size):
+        for dy in range(0, size):
+            grid_cells.append(top_left + dx + (dy * columns))
+    return grid_cells
 
 
 def power(x, y, serial):
@@ -21,21 +31,31 @@ for x in range(1, columns + 1):
         cell = get_cell(x, y)
         cells[cell] = power(x, y, serial)
 
-total = 0
-highest = None
-for x in range(1, columns - 1):
-    for y in range(1, rows - 1):
-        square = sum([
-            cells[get_cell(x, y)],
-            cells[get_cell(x + 1, y)],
-            cells[get_cell(x + 2, y)],
-            cells[get_cell(x, y + 1)],
-            cells[get_cell(x + 1, y + 1)],
-            cells[get_cell(x + 2, y + 1)],
-            cells[get_cell(x, y + 2)],
-            cells[get_cell(x + 1, y + 2)],
-            cells[get_cell(x + 2, y + 2)],
-        ])
-        if square > total:
-            total = square
-            highest = (x, y)
+
+def highest_grid(max_size):
+    previous_highest = 0
+    sizes = {}
+    for size in range(1, max_size + 1):
+
+        total = 0
+        highest = None
+        for x in range(1, columns - size):
+            for y in range(1, rows - size):
+                square = 0
+                for cell in get_grid_cells(x, y, size):
+                    square += cells[cell]
+
+                if square > total:
+                    total = square
+                    highest = (x, y, total)
+
+        sizes[size] = (highest)
+        # if total < previous_highest:
+        #     break
+        # else:
+        #     previous_highest = total
+
+    return sizes
+
+
+sizes = highest_grid(18)
