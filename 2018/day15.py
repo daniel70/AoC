@@ -9,19 +9,19 @@ for y, line in enumerate(lines):
     map_.append(line)
 
 
-def enemy_is_adjacent(pos, units: dict):
-    gender, hp = units[pos]
+def find_adjacent_enemy(pos, enemies: list[tuple[int, int]]) -> tuple[int, int] | bool:
     x, y = pos
-    for other_pos, other_props in units.items():
-        if pos == other_pos:
-            continue  # myself
-        other_gender, _ = other_props
-        if gender == other_gender:
-            continue  # friend
-        other_x, other_y = other_pos
-        if abs(x - other_x) == 1 and abs(y - other_y) == 1:  # a nearby enemy
-            return True
-    return False
+    for other_x, other_y in enemies:
+        if abs(x - other_x) == 1 and y == other_y:  # a nearby enemy on the same line
+            return other_x, other_y
+        if x == other_x and abs(y - other_y) == 1:  # a nearby enemy above or below
+            return other_x, other_y
+    else:
+        return False
+
+
+def make_a_move(pos: tuple[int, int], units: dict, map_: list) -> tuple[int, int] | None:
+    pass
 
 
 for round in range(1, 2):
@@ -29,10 +29,19 @@ for round in range(1, 2):
     sorted_units = sorted(units)
     sorted_units.sort(key=lambda pos: pos[1])
     for pos in sorted_units:
-        unit = units[pos]
-        if not enemy_is_adjacent(pos, units):
+        x, y = pos
+        gender, hp = units[pos]
+
+        enemies: list[tuple[int, int]] = sorted([k for k, v in units.items() if v[0] != gender and k != pos])
+        enemies.sort(key=lambda pos: pos[1])
+        enemy = find_adjacent_enemy(pos, enemies)
+        if not enemy:
+            print(f"{pos} has no enemy adjacent")
             pass  # make_a_move(pos, units, map_)
-        if enemy_is_adjacent(pos, units):
+
+        enemy = find_adjacent_enemy(pos, enemies)
+        if find_adjacent_enemy(pos, enemies):
+            print(f"{pos} has an enemy adjacent at {enemy}")
             pass  # attack
 
 
