@@ -14,26 +14,19 @@ with open('input07.txt') as f:
 pwd = pathlib.Path()
 fs = {}
 for instruction in instructions:
-    if instruction.startswith("$"):
-        command = instruction[2:].split()
-        match command[0]:
-            case "ls":
-                pass
-            case "cd":
-                if command[1] == "/":
-                    pwd = pathlib.Path(pwd.root)
-                elif command[1] == "..":
-                    pwd = pathlib.Path(pwd.parent)
-                else:
-                    pwd = pwd / command[1]
+    command = instruction.split()
+    if command[0] == "$":
+        if command[1] == "cd":
+            if command[2] == "/":
+                pwd = pathlib.Path(pwd.root)
+            elif command[2] == "..":
+                pwd = pathlib.Path(pwd.parent)
+            else:
+                pwd = pwd / command[2]
 
     else:  # dir mode
         dir_or_size, file_name = instruction.split()
-        if dir_or_size == "dir":
-            size = 0
-        else:
-            size = int(dir_or_size)
-
+        size = 0 if dir_or_size == "dir" else int(dir_or_size)
         used_disk_space += size
         fs[pwd / file_name] = size
 
@@ -45,11 +38,7 @@ for file_name, size in fs.items():
             file_name = pathlib.Path(file_name.parent)
             dirs[file_name] += size
 
-total = 0
-for size in dirs.values():
-    if size <= 100_000:
-        total += size
-
+total = sum(size for size in dirs.values() if size <= 100_000)
 print("answer 1:", total)
 
 min_size_to_delete = needed_disk_space - (total_disk_space - used_disk_space)
