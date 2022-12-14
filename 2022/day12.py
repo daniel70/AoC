@@ -1,7 +1,7 @@
 from string import ascii_lowercase as az
 import sys
 
-sys.setrecursionlimit(1500)
+sys.setrecursionlimit(2500)
 instructions: list[list[str]] = []
 with open("input12.txt") as f:
     for row, line in enumerate(f):
