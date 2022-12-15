@@ -2,7 +2,7 @@ from itertools import zip_longest
 from functools import cmp_to_key
 
 
-def is_correct(left, right) -> int | None:
+def is_correct(left, right) -> int:
     for l, r in zip_longest(left, right):
         match l, r:
             case None, int():
