@@ -1,3 +1,4 @@
+import math
 import re
 from collections import defaultdict
 
@@ -35,9 +36,13 @@ with open("input03.txt") as file:
 
 cells = adjacent_cells(numbers=numbers)
 
-total = 0
+total = ratio = 0
 for nr, line in enumerate(symbols):
     for symbol in line:
         total += sum(cells[(nr, symbol.start())])
+        if symbol.group() == "*":
+            if len(cells[(nr, symbol.start())]) > 1:
+                ratio += math.prod(cells[(nr, symbol.start())])
 
-print(total)
+print("answer 1:", total)
+print("answer 2:", ratio)
