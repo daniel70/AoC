@@ -15,8 +15,8 @@ maps = [
 ]
 
 
-maps = []
-with open("input05.txt") as file:
+maps: list[dict[range, int]] = []
+with open("test05.txt") as file:
     seeds = [int(n) for n in re.findall(r"\d+", file.readline())]
     for line in file:
         line = line.strip()
@@ -27,6 +27,11 @@ with open("input05.txt") as file:
         else:
             d, s, r = [int(n) for n in re.findall(r"\d+", line)]
             maps[-1][range(s, s + r)] = d - s
+
+# sort the maps
+sorted_maps = []
+for m in maps:
+    sorted_maps.append(sorted(m, key=lambda k: k.start))
 
 answer1 = []
 for seed in seeds:
@@ -57,3 +62,17 @@ for r in [range(s, s + r) for s, r in zip(seeds[::2], seeds[1::2])]:
 
 print("answer 1:", min(answer1))
 print("answer 2:", min(answer2))
+
+# answer3 = []
+# for r in [range(s, s+r) for s, r in zip(seeds[::2], seeds[1::2])]:
+#     new_ranges = []
+#     for m in maps[0]:
+#         if m.st
+
+# 98 100 -> 50 52
+# 50 98 -> 52 100
+# 0 49 -> 0 49
+
+# 0 15 -> 39 54
+# 15 52 -> 0 37
+# 52 54 -> 37 39
