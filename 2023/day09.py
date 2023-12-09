@@ -6,16 +6,22 @@ with open("input09.txt") as file:
         line = line.strip()
         instructions.append([int(char) for char in line.split()])
 
-total = 0
+answer1 = answer2 = 0
 for instruction in instructions:
-    history = [instruction, ]
+    history = [
+        instruction,
+    ]
     while not all(c == 0 for c in history[-1]):
         history.append([right - left for left, right in pairwise(history[-1])])
 
     for last, prev in pairwise(reversed(history)):
-        new_value = last[-1] + prev[-1]
-        prev.append(new_value)
+        pre = -last[0] + prev[0]
+        post = last[-1] + prev[-1]
+        prev.insert(0, pre)
+        prev.append(post)
 
-    total += history[0][-1]
+    answer1 += history[0][-1]
+    answer2 += history[0][0]
 
-print(total)
+print(answer1)
+print(answer2)
