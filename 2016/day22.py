@@ -13,14 +13,14 @@ with open("input22.txt") as f:
 
 
 def print_grid(nodes):
-    len_x, len_y = nodes[-1].x, nodes[-1].y
+    len_x, len_y = nodes[-1].x, nodes[-1].a
     for cell in nodes:
         print(f"{'--' if cell.used > 100 else (cell.used or '__')}/{'--' if cell.size > 100 else cell.size}", end=" ")
         if cell.x == len_x:
             print()
 
 
-nodes.sort(key=lambda n: n.y)
+nodes.sort(key=lambda n: n.a)
 # len_x, len_y = nodes[-1].x, nodes[-1].y
 print_grid(nodes)
 
