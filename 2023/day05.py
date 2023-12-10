@@ -16,7 +16,7 @@ maps = [
 
 
 maps: list[dict[range, int]] = []
-with open("test05.txt") as file:
+with open("input05.txt") as file:
     seeds = [int(n) for n in re.findall(r"\d+", file.readline())]
     for line in file:
         line = line.strip()
@@ -47,7 +47,8 @@ for seed in seeds:
     answer1.append(seed)
 
 answer2 = []
-for r in [range(s, s + r) for s, r in zip(seeds[::2], seeds[1::2])]:
+ranges = [range(s, s + r) for s, r in zip(seeds[::2], seeds[1::2])]
+for r in ranges:
     for seed in r:
         # print(f"{seed} -> ", end="")
         for m in maps:
