@@ -14,42 +14,45 @@ with open("input05.txt") as file:
             maps[-1][range(s, s + r)] = d - s
 
 
-answer1 = []
-for seed in seeds:
-    for m in maps:
-        for k, v in m.items():
-            if seed in k:
-                seed += v
-                break
-    answer1.append(seed)
-
-seeds = [range(left, left + right) for left, right in zip(seeds[::2], seeds[1::2])]
-for map in maps:
-    new_seeds: list[range] = []
-    for seed in sorted(seeds, key=lambda r: r.start):
-        for r in sorted(map, key=lambda r: r.start):
-            if seed.stop < r.start:
-                new_seeds.append(seed)
-                seed = range(0, 0)
-                break
-            if seed.start in r:
-                offset = map[r]
-                if seed.stop in r:
-                    new_seeds.append(range(seed.start + offset, seed.stop + offset))
-                    seed = range(seed.stop, seed.stop)
+def mapping(seeds, maps):
+    for map in maps:
+        new_seeds: list[range] = []
+        for seed in sorted(seeds, key=lambda r: r.start):
+            for map_range in sorted(map, key=lambda r: r.start):
+                if seed.stop < map_range.start:
+                    new_seeds.append(seed)
+                    seed = range(0, 0)
                     break
-                else:
-                    new_seeds.append(range(seed.start + offset, r.stop + offset))
-                    seed = range(r.stop, seed.stop)
-            elif seed.stop in r:
-                offset = map[r]
-                new_seeds.append(range(r.start + offset, seed.stop + offset))
-                seed = range(seed.start, r.start)
+                if seed.start in map_range:
+                    offset = map[map_range]
+                    if seed.stop in map_range:
+                        new_seeds.append(range(seed.start + offset, seed.stop + offset))
+                        seed = range(seed.stop, seed.stop)
+                        break
+                    else:
+                        new_seeds.append(
+                            range(seed.start + offset, map_range.stop + offset)
+                        )
+                        seed = range(map_range.stop, seed.stop)
+                elif seed.stop in map_range:
+                    offset = map[map_range]
+                    new_seeds.append(
+                        range(map_range.start + offset, seed.stop + offset)
+                    )
+                    seed = range(seed.start, map_range.start)
 
-        if len(seed) > 0:
-            new_seeds.append(seed)
+            if len(seed) > 0:
+                new_seeds.append(seed)
 
-    seeds = new_seeds
+        seeds = new_seeds
+    return min([s.start for s in seeds])
 
-print("answer 1:", min(answer1))
-print("answer 2:", min([s.start for s in seeds]))
+
+print("answer 1:", mapping([range(seed, seed + 1) for seed in seeds], maps))
+print(
+    "answer 2:",
+    mapping(
+        [range(left, left + right) for left, right in zip(seeds[::2], seeds[1::2])],
+        maps,
+    ),
+)
