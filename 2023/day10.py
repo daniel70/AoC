@@ -15,14 +15,6 @@ directions = {
     # "S": "NESW",
 }
 
-# build a wall around the maze
-for row in maze:
-    row.insert(0, ".")
-    row.append(".")
-
-maze.insert(0, ["."] * len(maze[0]))
-maze.append(["."] * len(maze[0]))
-
 # find start
 for nr, row in enumerate(maze):
     if "S" in row:
@@ -47,7 +39,6 @@ if maze[y][x - 1] in ["F", "-", "L"]:
 
 for k, v in directions.items():
     if v == s_neighbours:
-        print("S is", k)
         maze[y][x] = k
 
 positions = []
@@ -96,19 +87,15 @@ while not is_seen:
 
     positions = new_positions
 
-print(S)
-print(steps)
+print("answer 1:", steps)
 
 inside = []
-outside = []
 for y, row in enumerate(maze):
     previous = ""
     count = 0
     for x, col in enumerate(row):
         if (y, x) not in seen:
-            if count % 2 == 0:
-                outside.append((y, x))
-            else:
+            if count % 2 == 1:
                 inside.append((y, x))
         else:
             if maze[y][x] == "|":
@@ -122,5 +109,4 @@ for y, row in enumerate(maze):
                 count += 1
                 previous = ""
 
-print(len(inside))
-# 819 too high, 815 is incorrect, 811
+print("answer 2:", len(inside))
