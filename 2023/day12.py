@@ -3,10 +3,11 @@ from collections import Counter
 
 instructions: list[str, tuple[int, ...]] = []
 qs = []
-with open("input12.txt", "r") as file:
+with open("test12.txt", "r") as file:
     for line in file:
         line = line.strip()
         left, right = line.split()
+        left, right = left, right
         instructions.append([left, tuple([int(i) for i in right.split(",")])])
 
 
@@ -36,6 +37,8 @@ r = "\.*" + r + "\.*"
 
 count = 0
 for line, groups in instructions:
+    line = line * 5
+    groups = groups * 5
     r = "\.+".join([rf"#{{{i}}}" for i in groups])
     r = "^\.*" + r + "\.*$"
     for arrangement in arrangements(line):
