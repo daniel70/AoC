@@ -3,16 +3,12 @@ from collections import Counter
 
 instructions: list[str, tuple[int, ...]] = []
 qs = []
-with open("test12.txt", "r") as file:
+with open("input12.txt", "r") as file:
     for line in file:
         line = line.strip()
         left, right = line.split()
         left, right = left, right
         instructions.append([left, tuple([int(i) for i in right.split(",")])])
-
-
-def arrange(line, ranges):
-    print(line)
 
 
 def arrangements(line: str):
@@ -36,16 +32,17 @@ r = "\.+".join([rf"#{{{i}}}" for i in (1, 1, 3)])
 r = "\.*" + r + "\.*"
 
 count = 0
+f = open("method1.txt", "w")
 for line, groups in instructions:
-    line = line * 5
-    groups = groups * 5
+    line = line
+    groups = groups
     r = "\.+".join([rf"#{{{i}}}" for i in groups])
     r = "^\.*" + r + "\.*$"
     for arrangement in arrangements(line):
         if re.match(r, arrangement):
             count += 1
-    print(line, groups, r, count)
-
+    f.write(f"{line}, {count}\n")
+f.close()
 print(count)
 
 

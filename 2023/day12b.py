@@ -1,20 +1,45 @@
 import re
-# ???.### 1,1,3
+from datetime import datetime as dt
 
 
 total = 0
-def matcher(s: str, groups: list, count=0):
+def matcher(s: str, groups: tuple, solution: str = ""):
     global total
-    s = s.strip(".")
     if not groups and not "#" in s:
-        total += count
+        # print(solution + "." * len(s))
+        total += 1
         return
-    if s == "":
+    if not groups:
         return
-    group = groups.pop(0)
-    matches = re.finditer(f"^[\?|#]{{{group}}}[^#]", s)
-    for match in matches:
-        matcher(s[match.start() + 1:], groups, count+1)
+    if groups and not s:
+        return
+    if sum(groups) + len(groups) - 1 > len(s):
+        return
+    
+    match = re.match(f"^([\?#]{{{groups[0]}}})([^#]|$)", s)
+    if match:
+        matcher(s[match.end():], groups[1:], solution + "#" * (match.end() - match.start() - 1) + ".")
 
-matcher("???.###", [1, 1, 3])
+    if not s.startswith("#"):
+        matcher(s[1:], groups, solution + ".")
+
+    return total
+
+
+instructions: list[str, tuple[int, ...]] = []
+with open("input12.txt") as file:
+    for line in file:
+        line = line.strip()
+        left, right = line.split()
+        instructions.append([left, tuple([int(i) for i in right.split(",")])])
+
+
+for line, groups in instructions:
+    start = dt.now()
+    begin = total
+    print(f"{line}, {groups}", end="")
+    matcher("?".join([line] * 5), groups * 5)
+    print(f": {total - begin} ({(dt.now() - start).seconds})")
+
+
 print(total)
