@@ -1,5 +1,5 @@
 reports = []
-lines = open(r".\2024\input02.txt").read().strip().split("\n")
+lines = open(r".\2024\test02bad.txt").read().strip().split("\n")
 for line in lines:
     reports.append([int(level) for level in line.split()])
 
@@ -22,10 +22,10 @@ def save_report(report) -> int:
     
     return 0
 
-def safe2(report):
-    return any(save_report(reports[:i] + reports[i + 1:]) for i in range(len(reports)))
+# def safe2(report):
+#     return any(save_report(reports[:i] + reports[i + 1:]) for i in range(len(reports)))
 
-print(sum(safe2(reports) for reports in lines))
+# print(sum(safe2(reports) for reports in lines))
 
 for i, report in enumerate(reports):
     print(i, report, end=" ")
@@ -41,14 +41,15 @@ for i, report in enumerate(reports):
         print("Safe by removal of first element")
         continue
     popped = report.pop(result)
+    popped_index = result
     # print(f"Removing {popped}")
     result = save_report(report)
     if result == 0:
         answer2 += 1
-        print(f"Safe after removal of {popped}")
+        print(f"Safe after removal of {popped} (idx={popped_index})")
         continue
 
-    print("Bad")
+    print(f"Bad idx1:{popped_index} idx2:{result}")
 
 print(answer1)
 print(answer2)
