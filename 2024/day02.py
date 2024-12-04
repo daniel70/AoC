@@ -1,7 +1,7 @@
 reports = []
 answer1 = answer2 = 0
 
-lines = open(r".\2024\input02.txt").read().strip().split("\n")
+lines = open(r"input02.txt").read().strip().split("\n")
 for line in lines:
     reports.append([int(level) for level in line.split()])
 
@@ -30,5 +30,5 @@ for report in reports:
                 answer2 += 1
                 break
 
-print(answer1)
-print(answer2)
+print("answer 1: ", answer1)
+print("answer 2: ", answer2)

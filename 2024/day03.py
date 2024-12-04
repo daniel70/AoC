@@ -1,7 +1,7 @@
 import re
 mul = re.compile(r"(don\'t|do|mul\((\d{1,3}),(\d{1,3})\))")
 answer1 = answer2 = 0
-data = open(r".\2024\input03.txt").read().strip().split("\n")
+data = open(r"input03.txt").read().strip().split("\n")
 do = True
 for line in data:
     for finding in mul.findall(line):
