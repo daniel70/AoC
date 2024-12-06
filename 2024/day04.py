@@ -20,5 +20,5 @@ for x in range(length):
             if NE == SW == {'M', 'S'}:
                 answer2 += 1
 
-print(answer1)
-print(answer2)
+print("answer 1:", answer1)
+print("answer 2:", answer2)

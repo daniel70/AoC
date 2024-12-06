@@ -14,5 +14,5 @@ for left, right in zip(sorted(lefts), sorted(rights)):
     answer1 += abs(left - right)
     answer2 += (left * counts[left])
 
-print("answer 1: ", answer1)
-print("answer 2: ", answer2)
+print("answer 1:", answer1)
+print("answer 2:", answer2)

@@ -23,5 +23,5 @@ for report in reports:
             answer2 += 1
             break
 
-print("answer 1: ", answer1)
-print("answer 2: ", answer2)
+print("answer 1:", answer1)
+print("answer 2:", answer2)

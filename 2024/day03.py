@@ -15,5 +15,5 @@ for line in data:
                 answer1 += temp
                 answer2 += temp if do else 0
 
-print("answer 1: ", answer1)
-print("answer 2: ", answer2)
+print("answer 1:", answer1)
+print("answer 2:", answer2)
