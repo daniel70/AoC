@@ -24,6 +24,5 @@ for k, v in equations.items():
                 answer1.add(k)
             answer2.add(k)
 
-
 print(sum(answer1))
 print(sum(answer2))
