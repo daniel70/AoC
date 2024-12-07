@@ -7,7 +7,11 @@ for line in open('input07.txt').readlines():
     left, right = line.split(':')
     equations[int(left)] = [int(x) for x in right.split()]
 
-ops = [operator.add, operator.mul]
+
+def concat(a, b):
+    return int(f"{a}{b}")
+
+ops = [operator.add, operator.mul, concat]
 
 for k, v in equations.items():
     found = False
