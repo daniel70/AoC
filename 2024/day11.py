@@ -1,23 +1,23 @@
 from collections import deque, Counter
 
-
-totals = Counter(map(int, open(r"2024\input11.txt").read().split()))
-stones = deque(totals.keys())
-previous = totals.copy()
-for r in range(75):
+old = Counter(map(int, open(r"2024\input11.txt").read().split()))
+stones = deque(old.keys())
+for round in range(75):
     new = Counter()
     while stones:
         stone = stones.popleft()
         if stone == 0:
-            new[1] += previous[stone]
+            new[1] += old[stone]
         elif len(str(stone)) % 2 == 0:
             left, right = int(str(stone)[:len(str(stone))//2]), int(str(stone)[len(str(stone))//2:])
-            new[left] += previous[stone]
-            new[right] += previous[stone]
+            new[left] += old[stone]
+            new[right] += old[stone]
         else:
-            new[stone * 2024] += previous[stone]
-    totals.update(new)
-    previous = new.copy()
+            new[stone * 2024] += old[stone]
+    old = new.copy()
     stones = deque(new.keys())
-    print(f"round {r+1}:", sum(new.values()))
-print(sum(totals.values()))
+
+    if round == 24:
+        print("answer 1:", sum(new.values()))
+
+print(f"answer 2:", sum(new.values()))
