@@ -1,8 +1,8 @@
 garden = { i+j*1j:c for i, r in enumerate(open(r"2024\input12.txt").readlines())
                     for j, c in enumerate(r.strip())}
 
-def walk(pos, plant, region):
-    if pos in seen or garden[pos] != plant:
+def walk(pos, region):
+    if pos in seen:
         return
     
     region.append(pos)
@@ -10,15 +10,15 @@ def walk(pos, plant, region):
     
     # call the neighbours
     for neighbour in [pos + dir for dir in [-1, 1, -1j, 1j]]:
-        if neighbour in garden and garden[neighbour] == plant:
-            walk(neighbour, plant, region)
+        if neighbour in garden and garden[neighbour] == garden[pos]:
+            walk(neighbour, region)
 
 
 seen, regions = set(), list()
-for k, v in garden.items():
+for k in garden:
     if k not in seen:
         regions.append([])
-        walk(k, v, regions[-1])
+        walk(k, regions[-1])
 
 answer1 = 0
 answer2 = 0
