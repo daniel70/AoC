@@ -31,9 +31,23 @@ y=Y=10279
 
 
 
-input = [nrs.findall(line) for line in open('input13.txt').read().split('\n\n')]
+input = [nrs.findall(line) for line in open('test13.txt').read().split('\n\n')]
 
 def wins(ax, ay, bx, by, x, y) -> list[tuple[int, int]]:
+    ret = []
+    round = 0
+    while x >= 0 and y >= 0:
+        if x % bx == 0 and y % by == 0 and x // bx == y // by:
+            ret.append((round, x // bx))
+
+        round += 1
+        x -= ax
+        y -= ay
+    return ret
+
+def big_wins(ax, ay, bx, by, x, y) -> list[tuple[int, int]]:
+    x += 10_000_000_000_000
+    y += 10_000_000_000_000
     ret = []
     round = 0
     while x >= 0 and y >= 0:
@@ -48,7 +62,9 @@ def wins(ax, ay, bx, by, x, y) -> list[tuple[int, int]]:
 answer1 = 0
 for machine in input:
     win = wins(*[int(i) for i in machine])
+    big_win = big_wins(*[int(i) for i in machine])
     print(win)
+    print(big_win)
     if win:
         a, b = win[0]
         answer1 += a * 3 + b
