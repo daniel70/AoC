@@ -1,6 +1,6 @@
 from collections import deque, Counter
 
-old = Counter(map(int, open(r"2024\input11.txt").read().split()))
+old = Counter(map(int, open("input11.txt").read().split()))
 stones = deque(old.keys())
 for round in range(75):
     new = Counter()
