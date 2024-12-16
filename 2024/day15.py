@@ -1,5 +1,3 @@
-from unittest import case
-
 grid, moves = [lines.strip() for lines in open("input15.txt").read().split("\n\n")]
 big_grid = grid.replace("#", "##")
 big_grid = big_grid.replace("O", "[]")
@@ -12,18 +10,6 @@ moves = moves.replace("\n", "")
 
 pos = [k for k, v in grid.items() if v == "@"][0]
 grid[pos] = "."
-
-def print_grid(grid, pos, move, nr, length=10):
-    print("round:", nr, move)
-    nl = 0
-    for k, v in grid.items():
-        nl += 1
-        if k == pos:
-            print("@", end="")
-        else:
-            print(v, end="")
-        if nl % length == 0:
-            print("")
 
 def walk(pos, move):
     if grid[pos + move] == "#":
@@ -99,7 +85,6 @@ dirs = {"^": -1, ">": 1j, "v": 1, "<": -1j}
 nr = 0
 for move in moves:
     nr += 1
-    # print_grid(grid, pos, move, nr)
     pos = walk(pos, dirs[move])
 
 answer1 = 0
@@ -109,23 +94,16 @@ for k, v in grid.items():
 print(int(answer1))
 
 nr = 0
-# big_grid = "##############\n##......##..##\n##..........##\n##....[][]@.##\n##....[]....##\n##..........##\n##############\n"
-# moves = "<vv<<^^<<^^"
 big_grid = {(i+j*1j):c for i, r in enumerate(big_grid.split())
                  for j, c in enumerate(r.strip())}
 pos = [k for k, v in big_grid.items() if v == "@"][0]
 big_grid[pos] = "."
 for move in moves:
     nr += 1
-    # print_grid(big_grid, pos, move, nr, length=50)
     pos = big_walk(pos, dirs[move])
-# print_grid(big_grid, pos, move, nr, length=50)
-# pos = big_walk(pos, dirs[move])
 
 answer2 = 0
 for k, v in big_grid.items():
     if v == "[":
         answer2 += k.real * 100 + k.imag
 print(int(answer2))
-
-# 1486620 is too high
