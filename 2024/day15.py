@@ -1,4 +1,10 @@
+from unittest import case
+
 grid, moves = [lines.strip() for lines in open("input15.txt").read().split("\n\n")]
+big_grid = grid.replace("#", "##")
+big_grid = big_grid.replace("O", "[]")
+big_grid = big_grid.replace(".", "..")
+big_grid = big_grid.replace("@", "@.")
 
 grid = {(i+j*1j):c for i, r in enumerate(grid.split())
                  for j, c in enumerate(r.strip())}
@@ -7,17 +13,17 @@ moves = moves.replace("\n", "")
 pos = [k for k, v in grid.items() if v == "@"][0]
 grid[pos] = "."
 
-# def print_grid(grid, pos, move, nr):
-#     print("rounde:", nr, move)
-#     nl = 0
-#     for k, v in grid.items():
-#         nl += 1
-#         if k == pos:
-#             print("@", end="")
-#         else:
-#             print(v, end="")
-#         if nl % 10 == 0:
-#             print("")
+def print_grid(grid, pos, move, nr, length=10):
+    print("round:", nr, move)
+    nl = 0
+    for k, v in grid.items():
+        nl += 1
+        if k == pos:
+            print("@", end="")
+        else:
+            print(v, end="")
+        if nl % length == 0:
+            print("")
 
 def walk(pos, move):
     if grid[pos + move] == "#":
@@ -37,6 +43,58 @@ def walk(pos, move):
 
     return pos + move
 
+def big_walk(pos, move):
+    if big_grid[pos + move] == "#":
+        return pos
+    if big_grid[pos + move] == ".":
+        return pos + move
+
+    moves = []
+    if move in [-1j, 1j]:
+        while big_grid[pos + (move * (len(moves) + 1))] in "[]":
+            moves.append(pos + (move * (len(moves) + 1)))
+        if big_grid[pos + (move * (len(moves) + 1))] == ".":
+            for box in moves[::-1]:
+                big_grid[box + move] = big_grid[box]
+            big_grid[pos + move] = "."
+        else:
+            return pos #000@ < don't move
+
+    else:
+        # there is a box above or beneath, now start the hard part
+        # first add the first box
+        match big_grid[pos + move]:
+            case "[":
+                moves.extend([pos + move, pos + move + 1j])
+            case "]":
+                moves.extend([pos + move, pos + move - 1j])
+        while True: # start a loop
+            if any(big_grid[box + move] == "#" for box in moves if box + move not in moves):
+                return pos
+            if all(big_grid[box + move] == "." for box in moves if box + move not in moves):
+                # start moving up or down
+                while moves:
+                    for box in moves[:]:
+                        if box + move in moves:
+                            continue
+                        big_grid[box + move] = big_grid[box]
+                        big_grid[box] = "."
+                        moves.remove(box)
+                return pos + move
+            # add extra boxes to moves
+            for box in moves[:]:
+                if box + move in moves:
+                    continue
+                match big_grid[box + move]:
+                    case "[":
+                        moves.extend([box + move, box + move + 1j])
+                    case "]":
+                        moves.extend([box + move, box + move - 1j])
+
+
+
+    return pos + move
+
 dirs = {"^": -1, ">": 1j, "v": 1, "<": -1j}
 nr = 0
 for move in moves:
@@ -50,3 +108,24 @@ for k, v in grid.items():
         answer1 += k.real * 100 + k.imag
 print(int(answer1))
 
+nr = 0
+# big_grid = "##############\n##......##..##\n##..........##\n##....[][]@.##\n##....[]....##\n##..........##\n##############\n"
+# moves = "<vv<<^^<<^^"
+big_grid = {(i+j*1j):c for i, r in enumerate(big_grid.split())
+                 for j, c in enumerate(r.strip())}
+pos = [k for k, v in big_grid.items() if v == "@"][0]
+big_grid[pos] = "."
+for move in moves:
+    nr += 1
+    # print_grid(big_grid, pos, move, nr, length=50)
+    pos = big_walk(pos, dirs[move])
+# print_grid(big_grid, pos, move, nr, length=50)
+# pos = big_walk(pos, dirs[move])
+
+answer2 = 0
+for k, v in big_grid.items():
+    if v == "[":
+        answer2 += k.real * 100 + k.imag
+print(int(answer2))
+
+# 1486620 is too high
