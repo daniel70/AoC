@@ -49,7 +49,7 @@ assert test([1,7], [0,29,0]) == ([], [0, 26, 0])
 assert test([4,0], [0,2024,43690]) == ([], [0, 44354, 43690])
 assert test([0,1,5,4,3,0], [729,0,0]) == ([4, 6, 3, 5, 6, 3, 5, 2, 1, 0], [0, 0, 0])
 
-lines = [line for line in open("input17.txt").read().splitlines() if line]
+lines = [line for line in open("test17.txt").read().splitlines() if line]
 A = int(lines[0].split(":")[1])
 B = int(lines[1].split(":")[1])
 C = int(lines[2].split(":")[1])
@@ -59,3 +59,30 @@ output = []
 
 answer1 = ",".join([str(c) for c in test(program, [A, B, C], False)])
 print(f"answer 1: {answer1}")
+
+a = 0
+while output != [0,3,5,4,3,0]:
+    a += 1
+    output = test([0,3,5,4,3,0], [a, 0, 0], False)
+
+print(f"answer 2: {a}")
+
+a = 0
+n = 9 bbnvcx
+find = [2,4,1,2,7,5,4,5,0,3,1,7,5,5,3,0]
+while output != find:
+    a += 1
+    if a % 100000 == 0:
+        print(a)
+    output = test(find, [a, 0, 0], False)
+    if output[:n] == find[:n]:
+        print(f"{a} -> {output}")
+print(f"answer 2: {a}")
+
+"""
+1418475 -> [3, 1, 7, 5, 5, 3, 0]
+1420280 -> [3, 1, 7, 5, 5, 3, 0]
+1420281 -> [3, 1, 7, 5, 5, 3, 0]
+1420283 -> [3, 1, 7, 5, 5, 3, 0]
+1549547 -> [3, 1, 7, 5, 5, 3, 0]
+"""
